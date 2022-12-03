@@ -29,13 +29,13 @@ void printSide()
 {
     int x, y;
     for (y = 1; y < 26; y++) {
-        for (int x = 1; x < 77; x++) {
+        for (int x = 1; x < 78; x++) {
             if (y == 1 || y == 25) {
                 gotoxy(x, y);
                 printf("■");
             }
             else {
-                if (x == 1 || x == 76) {
+                if (x == 1 || x == 77) {
                     gotoxy(x, y);
                     printf("■");
                 }
@@ -45,16 +45,16 @@ void printSide()
 }   //플레이구역 구분선을 출력하는 함수
 
 void how_to_play() {
-    gotoxy(60, 26);
+    gotoxy(47, 26);
     printf("┌────────┐           ┌───┐ ┌───┐");
-    gotoxy(60, 27);
+    gotoxy(47, 27);
     printf("│  SPACE │           │ ←│ │ →│");
-    gotoxy(60, 28);
+    gotoxy(47, 28);
     printf("└────────┘           └───┘ └───┘");
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 6);
-    gotoxy(74, 27);
+    gotoxy(61, 27);
     printf("Move : ");
-    gotoxy(51, 27);
+    gotoxy(38, 27);
     printf("Attack : ");
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
 }   //조작법을 출력하는 함수
@@ -87,16 +87,14 @@ void main()
         stageMaxEnemy = 5;
 
         game_reset();
+        
         printTitle();
-
         getch();
         system("cls");
 
         gamePlay = TRUE;
 
         while (gamePlay) {
-            printSide();
-            how_to_play();
             for (count = 0;; count++) {
                 if (playerEnter(count, ch, &fx, Score, &bx, &by) == FALSE) {
                     gamePlay = FALSE;
@@ -131,6 +129,8 @@ void main()
                 }
 
                 printPlayerInfo(fx, Score, hp);
+                printSide();
+                how_to_play();
 
                 Sleep(40);
             }
