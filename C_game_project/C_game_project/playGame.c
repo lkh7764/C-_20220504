@@ -12,8 +12,7 @@ struct tag_Enemy
     int Delta;
     int nFrame;
     int nStay;
-}
-Enemy[TOTALMAXENEMY];
+}Enemy[TOTALMAXENEMY];
 
 struct tag_Ball
 {
@@ -21,8 +20,7 @@ struct tag_Ball
     int x, y;
     int nFrame;
     int nStay;
-}
-Ball[TOTALMAXBALL];
+}Ball[TOTALMAXBALL];
 
 void game_reset() 
 {             
