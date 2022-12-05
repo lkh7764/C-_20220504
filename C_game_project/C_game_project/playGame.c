@@ -12,8 +12,7 @@ struct tag_Enemy
     int Delta;
     int nFrame;
     int nStay;
-}
-Enemy[TOTALMAXENEMY];
+}Enemy[TOTALMAXENEMY];
 
 struct tag_Ball
 {
@@ -21,8 +20,7 @@ struct tag_Ball
     int x, y;
     int nFrame;
     int nStay;
-}
-Ball[TOTALMAXBALL];
+}Ball[TOTALMAXBALL];
 
 void game_reset() 
 {             
@@ -74,7 +72,7 @@ void enemySet(int ballRate, int enemyRate, int stageMaxBall, int stageMaxEnemy, 
             }
             else
             {
-                Enemy[i].x = 74;
+                Enemy[i].x = 72;
                 Enemy[i].Delta = -1;
             }
 
@@ -128,7 +126,7 @@ void enemySet(int ballRate, int enemyRate, int stageMaxBall, int stageMaxEnemy, 
         if (Enemy[i].exist == FALSE) continue;
         if (--Enemy[i].nStay == 0) {
             Enemy[i].nStay = Enemy[i].nFrame;
-            if (Enemy[i].x >= 76 || Enemy[i].x <= 4) {
+            if (Enemy[i].x >= 73 || Enemy[i].x <= 5) {
                 Enemy[i].exist = FALSE;
                 gotoxy(Enemy[i].x - 3, Enemy[i].y);
                 puts("       ");
