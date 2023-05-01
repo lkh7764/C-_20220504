@@ -145,6 +145,7 @@ void main()
                         fclose(file);   //
                     }
                 }
+                else { best_score = Score; }
                 
                 BOOL check = hp_check(hp, fx);  //
                 if (check == TRUE) {    //
