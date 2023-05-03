@@ -50,18 +50,25 @@ void problem1() {
 struct Canvas;
 struct GameObject {
 	int		uniqueNum;
-	char*	name;
+
+	int		countNum;
+	int		thisCount;
+
+	char* name;
 	int		pos;
 	int		direction;
 
-	GameObject(int num, const char* name) : uniqueNum(num), name(new char[strlen(name) + 1]), 
+	GameObject(int uniqueNum, int countNum, int thisCount, const char* name) :
+		uniqueNum(uniqueNum), countNum(countNum), thisCount(thisCount), name(new char[strlen(name) + 1]),
 		pos(0), direction(rand() % 2) {
 		if (name != nullptr)
 			strcpy(this->name, name);
 	}
 
 	int getUniqueNum() { return uniqueNum; }
-	
+
+	int getCountNum() { return countNum; }
+
 	const char* getName() { return name; }
 	int getNameSize() { return strlen(name); }
 
@@ -82,11 +89,33 @@ struct GameObject {
 		if (pos + strlen(name) > canvasSize) {
 			pos -= strlen(name);
 		}
-			
 	}
 
 	void moveObject(Canvas& canvas) {
 
+	}
+
+	bool isCollidingWithOther(GameObject*& scissors, GameObject*& rocks, GameObject*& papers) {
+		int scissorsNum = scissors[0].getCountNum();
+		int rockNum = rocks[0].getCountNum();
+		int paperNum = papers[0].getCountNum();
+
+		if (uniqueNum == 0) {
+			// other이 scissor일 때
+			for (int i = 0; i < scissorsNum; i++) {
+
+			}
+		}
+		if (uniqueNum == 1) {
+
+		}
+		if (uniqueNum == 2) {
+
+		}
+	}
+
+	bool comparePos(int pos) {
+		return pos >= (this->pos - 1) && pos < (this->pos + 1) + getNameSize();
 	}
 
 	void update() {
@@ -104,7 +133,7 @@ struct GameObject {
 
 struct Canvas {
 	int		size;
-	char*	frameBuffer;
+	char* frameBuffer;
 
 	Canvas(int size) : size(size), frameBuffer(new char[size + 1]) {
 		clear();
@@ -139,19 +168,19 @@ struct Canvas {
 };
 
 struct Scissors : public GameObject {
-	Scissors() : GameObject(0, "scissors") {}
+	Scissors(int countNum, int thisCount) : GameObject(0, countNum, thisCount, "scissors") {}
 
 	~Scissors() {}
 };
 
 struct Rock : public GameObject {
-	Rock() : GameObject(1, "rock") {}
+	Rock(int countNum, int thisCount) : GameObject(1, countNum, thisCount, "rock") {}
 
 	~Rock() {}
 };
 
 struct Paper : public GameObject {
-	Paper() : GameObject(2, "paper") {}
+	Paper(int countNum, int thisCount) : GameObject(2, countNum, thisCount, "paper") {}
 
 	~Paper() {}
 };
@@ -176,25 +205,26 @@ void problem2() {
 		countNum[num]++;
 	}
 
-	// 지정된 수만큼 객체 생성
-	for (int i = 0; i < 3; i++) {
-		if (i == 0){
-			scissors = (Scissors**)malloc(sizeof(Scissors*) * countNum[i]);
-			for (int j = 0; j < countNum[i]; j++)
-				scissors[j] = new Scissors;
-		}
-		else if (i == 1){
-			rocks = (Rock**)malloc(sizeof(Rock*) * countNum[i]);
-			for (int j = 0; j < countNum[i]; j++)
-				rocks[j] = new Rock;
-		}
-		else if (i == 2) {
-			papers = (Paper**)malloc(sizeof(Paper*) * countNum[i]);
-			for (int j = 0; j < countNum[i]; j++)
-				papers[j] = new Paper;
-		}
+	// 지정된 수만큼 객체 생성: scissors
+	scissors = (Scissors**)malloc(sizeof(Scissors*) * countNum[0]);
+	for (int j = 0; j < countNum[0]; j++) {
+		scissors[j] = new Scissors(countNum[0], j);
+		scissors[j]->setPos(*canvas);
+	}
+	// 지정된 수만큼 객체 생성: rock
+	rocks = (Rock**)malloc(sizeof(Rock*) * countNum[1]);
+	for (int j = 0; j < countNum[1]; j++) {
+		rocks[j] = new Rock(countNum[1], j);
+		rocks[j]->setPos(*canvas);
+	}
+	// 지정된 수만큼 객체 생성: paper
+	papers = (Paper**)malloc(sizeof(Paper*) * countNum[2]);
+	for (int j = 0; j < countNum[2]; j++) {
+		papers[j] = new Paper(countNum[2], j);
+		papers[j]->setPos(*canvas);
 	}
 
+	// 작동
 	while (true) {
 
 	}
