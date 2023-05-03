@@ -74,6 +74,8 @@ struct Canvas {
 		frameBuffer[size] = '\0';
 	}
 
+	int getSize() { return size; }
+
 	void draw(const GameObject&);
 
 	void render() const {
@@ -142,10 +144,15 @@ struct Bullet : public GameObject {
 
 	Bullet(const char* shape, int pos, int direciton) : GameObject(shape, pos), direction(direction), hp(10) {}
 
-	void move() {
+	void move(Canvas& canvas) {
 		int pos = getPos();
 		if (direction == 0) setPos(pos + 1);
 		else setPos(pos - 1);
+
+		if (pos + 1 >= canvas.getSize() - 1)
+			direction = 1;
+		else if (pos - 1 <= 0)
+			direction = 0;
 	}
 
 	void isColliding() {
@@ -160,14 +167,15 @@ struct Bullet : public GameObject {
 		damaged();
 	}
 
-	void damaged() { hp -= 1; }
+	void damaged() { hp -= 4; }
+
+	int getHP() { return hp; }
 
 	void draw(Canvas& canvas) { canvas.draw(*this); }
 
 	void update(Mirror& m1, Mirror& m2) {
 		move();
 		if (m1.isColliding(pos) == true || m2.isColliding(pos) == true) isColliding();
-		if (hp <= 0) delete(this);
 	}
 
 	~Bullet() {
@@ -178,34 +186,18 @@ struct Bullet : public GameObject {
 
 struct Player : public GameObject {
 	int frameCount;
+	Bullet* bullets[100];
 
-	Player(const char* shape, int pos) : GameObject(shape, pos), frameCount(0) {}
-
-	//Bullet* shootBullet() {
-	//	int direction = rand() % 2;
-
-	//	char* bulletShape;
-	//	if (direction == 0) bulletShape = new char[] { ">" };
-	//	else bulletShape = new char[] { "<" };
-
-	//	int pos = 0;
-	//	if (direction == 0) pos = getPos() + getShapeSize() - 1;
-	//	else getPos();
-
-	//	Bullet* bullet = new Bullet(bulletShape, pos, direction);
-
-	//	delete[] bulletShape;
-	//	bulletShape = nullptr;
-
-	//	return bullet;
-	//}
+	Player(const char* shape, int pos) : GameObject(shape, pos), frameCount(30) {
+		for (int i = 0; i < 100; i++)
+			bullets[i] = nullptr;
+	}
 
 	void draw(Canvas& canvas) { canvas.draw(*this); }
 
 	void update(Canvas& canvas, Mirror& m1, Mirror& m2) {
-		Bullet* bullet = nullptr;
-		frameCount++;
-		if (frameCount == 30) {
+		frameCount--;
+		if (frameCount <= 0) {
 			int direction = rand() % 2;
 
 			char* bulletShape;
@@ -213,23 +205,36 @@ struct Player : public GameObject {
 			else bulletShape = new char[] { "<" };
 
 			int pos = 0;
-			if (direction == 0) pos = getPos() + getShapeSize() - 1;
-			else getPos();
+			if (direction == 0) pos = getPos() + getShapeSize();
+			else pos = getPos() - 1;
 
-			bullet = new Bullet(bulletShape, pos, direction);
+			for (int i = 0; i < 100; i++) {
+				if (bullets[i] == nullptr) {
+					bullets[i] = new Bullet(bulletShape, pos, direction);
+					break;
+				}
+			}
 
 			delete[] bulletShape;
 			bulletShape = nullptr;
-			frameCount = 0;
+			frameCount = 30;
 		}
-		if (bullet != nullptr) {
-			bullet->draw(canvas);
-			bullet->update(m1, m2);
+		for (int i = 0; i < 100; i++) {
+			if (bullets[i] != nullptr) {
+				if (bullets[i]->getHP() <= 0) {
+					delete(bullets[i]);
+					bullets[i] = nullptr;
+				}
+				bullets[i]->draw(canvas);
+				bullets[i]->update(m1, m2);
+			}
 		}
 	}
 
 	~Player() {
 		frameCount = 0;
+		for (int i = 0; i < 100; i++)
+			bullets[i] = nullptr;
 	}
 };
 
